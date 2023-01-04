@@ -1,4 +1,4 @@
-package design.a
+package 디자인패턴.a
 
 interface Product: Cloneable{
      fun use(s: String)

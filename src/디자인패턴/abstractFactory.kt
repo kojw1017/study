@@ -1,4 +1,4 @@
-package design
+package 디자인패턴
 
 abstract class Product{
     abstract fun use()

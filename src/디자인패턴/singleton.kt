@@ -1,4 +1,4 @@
-package design
+package 디자인패턴
 
 class Singleton{
     private companion object{ private val singleton = Singleton() }

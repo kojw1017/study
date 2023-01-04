@@ -1,4 +1,4 @@
-package design
+package 디자인패턴
 
 import java.io.FileWriter
 import java.io.IOException

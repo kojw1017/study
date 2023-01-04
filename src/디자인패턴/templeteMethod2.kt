@@ -1,4 +1,4 @@
-package design
+package 디자인패턴
 /*
     템플릿 메소드 패턴
     어떤 일을 단계별로 처리해야 하지만

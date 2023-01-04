@@ -1,4 +1,4 @@
-package design.ab
+package 디자인패턴.ab
 
 /*
     팩토리 메소드

@@ -1,4 +1,4 @@
-package oop
+package 헤드파스트
 
 enum class Type(val str: String){
     ACOUSTIC("Acoustic"), ELECTRIC("Electric")
