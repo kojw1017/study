@@ -1,86 +1,112 @@
 package 헤드파스트
 /*
- 234p
+ 244p
  */
 enum class Type(val str: String){
     ACOUSTIC("Acoustic"), ELECTRIC("Electric")
 }
-
 enum class Builder(val str: String){
     FENDER("Fender"), MARTIN("Martin"),
     GIBSON("Gibson"), COLLINGS("Collings"),
     OLSON("Olson"), RYAN("Ryan"),
     PRS("Prs"), ANY("Any"),
 }
-
 enum class Wood(val str: String){
     INDIAN_ROSEWOOD("Indian RoseWood"), BRAZILIAN_ROSEWOOD("Brazilian RoseWood"),
     MAHOGANY("Mahogany"), MAPLE("Maple"),
     COCOBOLO("Coco Bolo"), CEDAR("Cedar"),
 }
 
-class Guitar(
-    private var serialNumber: String,
-    private var price: Double,
-    private var spec: GuitarSpec
+abstract class Instrument(val serialNumber: String, var price: Double, val instrument: InstrumentSpec)
+class Guitar(serialNumber: String, price: Double, spec: GuitarSpec): Instrument(serialNumber, price, spec)
+class Mandolin(serialNumber: String, price: Double, spec: MandolinSpec): Instrument(serialNumber, price, spec)
+open class InstrumentSpec(
+    var builder: Builder,
+    var model: String,
+    var type: Type,
+    var backWood: Wood,
+    var topWood: Wood
 ){
-    fun getSerialNumber() = serialNumber
-    fun getPrice() = price
-    fun setPrice(newPrice: Double) { price = newPrice }
-    fun getSpec() = spec
-}
-
-class GuitarSpec(
-    private var builder: Builder,
-    private var model: String,
-    private var type: Type,
-    private var numStrings: Int,
-    private var backWood: Wood,
-    private var topWood: Wood
-){
-    fun getBuilder() = builder
-    fun getModel() = model
-    fun getType() = type
-    fun getNumStrings() = numStrings
-    fun getBackWood() = backWood
-    fun getTopWood() = topWood
-    fun matches(otherSpec: GuitarSpec): Boolean {
-        if(builder != otherSpec.getBuilder()) return false
-        if(model.isNotEmpty() && model.lowercase() != otherSpec.getModel().lowercase()) return false
-        if(type != otherSpec.getType()) return false
-        if(numStrings != otherSpec.getNumStrings()) return false
-        if(backWood != otherSpec.getBackWood()) return false
-        if(topWood != otherSpec.getTopWood()) return false
+    open fun matches(otherSpec: InstrumentSpec): Boolean {
+        if(builder != otherSpec.builder) return false
+        if(model.isNotEmpty() && model.lowercase() != otherSpec.model.lowercase()) return false
+        if(type != otherSpec.type) return false
+        if(backWood != otherSpec.backWood) return false
+        if(topWood != otherSpec.topWood) return false
         return true
     }
 }
 
-class Inventory(private var guitars: MutableList<Guitar> = mutableListOf()) {
-    fun addGuitar(serialNumber: String, price: Double, builder: Builder, model: String, type: Type, numStrings: Int, backWood: Wood, topWood: Wood){
-        guitars.add(Guitar(serialNumber, price, GuitarSpec(builder, model, type, numStrings, backWood, topWood)))
+class GuitarSpec(
+    builder: Builder,
+    model: String,
+    type: Type,
+    backWood: Wood,
+    topWood: Wood,
+    val numStrings: Int
+): InstrumentSpec(builder, model, type, backWood, topWood){
+    override fun matches(otherSpec: InstrumentSpec): Boolean {
+        if(!super.matches(otherSpec)) return false
+        if(otherSpec is GuitarSpec) {
+            if(otherSpec.numStrings != numStrings) return false
+        }else return false
+        return true
     }
-    fun getGuitar(serialNumber: String): Guitar? = guitars.find { it.getSerialNumber() == serialNumber }
-    fun search(searchSpec: GuitarSpec): List<Guitar> = guitars.filter { it.getSpec().matches(searchSpec) }
 }
 
-fun main() {
-    val inventory = Inventory()
-    inventory.addGuitar("V956935", 1499.95, Builder.FENDER, "Stractocastor1", Type.ELECTRIC,6, Wood.MAPLE, Wood.MAPLE)
-    inventory.addGuitar("V956934", 1433.11, Builder.COLLINGS, "Stractocastor2", Type.ELECTRIC, 12, Wood.MAPLE, Wood.MAPLE)
-    inventory.addGuitar("V956934", 1433.11, Builder.COLLINGS, "Stractocastor2", Type.ELECTRIC, 12, Wood.MAPLE, Wood.MAPLE)
-    val erinLikes = GuitarSpec(Builder.COLLINGS, "Stractocastor2", Type.ELECTRIC, 12, Wood.MAPLE, Wood.MAPLE)
-    val guitars = inventory.search(erinLikes)
+class MandolinSpec(
+    builder: Builder,
+    model: String,
+    type: Type,
+    backWood: Wood,
+    topWood: Wood,
+    val style: Style
+): InstrumentSpec(builder, model, type, backWood, topWood){
+    override fun matches(otherSpec: InstrumentSpec): Boolean {
+        if(!super.matches(otherSpec)) return false
+        if(otherSpec is MandolinSpec) {
+            if(style != otherSpec.style) return false
+        }else return false
+        return true
+    }
+}
+
+class Style
+
+class Inventory(val inventory: MutableList<Instrument> = mutableListOf()) {
+    fun addInstrument(serialNumber: String, price: Double, spec: InstrumentSpec){
+        var instrument:Instrument? = null
+        if(spec is GuitarSpec) instrument = Guitar(serialNumber, price, spec)
+        else if(spec is MandolinSpec) instrument = Mandolin(serialNumber, price, spec)
+        instrument?.let { inventory.add(it) }
+    }
+    fun getGuitar(serialNumber: String): Instrument? = inventory.find { it.serialNumber == serialNumber }
+    fun search(searchSpec: MandolinSpec): List<Instrument> = inventory.filter { it.instrument.matches(searchSpec) }
+    fun search(searchSpec: GuitarSpec): List<Instrument> = inventory.filter { it.instrument.matches(searchSpec) }
+}
+
+fun printGuitars(guitars: List<Instrument>){
     if(guitars.isNotEmpty()){
         guitars.forEach { guitar ->
-            val spec = guitar.getSpec()
+            val spec = guitar.instrument
             println("""
                 =====================================================================
-                Erin, you might like this ${spec.getBuilder()} ${spec.getModel()}
-                ${spec.getType()} guitar: ${spec.getBackWood()} back and sides
-                ${spec.getTopWood()} top you can have it for only ${guitar.getPrice()}
+                Erin, you might like this ${spec.builder} ${spec.model}
+                ${spec.type} guitar: ${spec.backWood} back and sides
+                ${spec.topWood} top you can have it for only ${guitar.price}
                 =====================================================================
                 """.trimIndent())
             println()
         }
     } else println("Sorry we have nothing for you")
+}
+
+fun main() {
+    val inventory = Inventory()
+    inventory.addInstrument("V956935", 1499.95, GuitarSpec(Builder.FENDER, "Stractocastor1", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, 12))
+    inventory.addInstrument("V956936", 1433.11, MandolinSpec(Builder.FENDER, "Stractocastor2", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, Style()))
+    inventory.addInstrument("V956937", 1433.11, InstrumentSpec(Builder.FENDER, "Stractocastor3", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE))
+    val erinLikes = GuitarSpec(Builder.FENDER, "Stractocastor1", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, 12)
+    val guitars = inventory.search(erinLikes)
+    printGuitars(guitars)
 }
