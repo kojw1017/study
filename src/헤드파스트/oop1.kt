@@ -1,6 +1,6 @@
 package 헤드파스트
 /*
- 244p
+ 283p
  */
 enum class Type(val str: String){
     ACOUSTIC("Acoustic"), ELECTRIC("Electric")
@@ -17,7 +17,9 @@ enum class Wood(val str: String){
     COCOBOLO("Coco Bolo"), CEDAR("Cedar"),
 }
 
-abstract class Instrument(val serialNumber: String, var price: Double, val instrument: InstrumentSpec)
+enum class Style{ A, F }
+
+abstract class Instrument(val serialNumber: String, var price: Double, val spec: InstrumentSpec)
 class Guitar(serialNumber: String, price: Double, spec: GuitarSpec): Instrument(serialNumber, price, spec)
 class Mandolin(serialNumber: String, price: Double, spec: MandolinSpec): Instrument(serialNumber, price, spec)
 open class InstrumentSpec(
@@ -61,19 +63,17 @@ class MandolinSpec(
     backWood: Wood,
     topWood: Wood,
     val style: Style
-): InstrumentSpec(builder, model, type, backWood, topWood){
+): InstrumentSpec(builder, model, type, backWood, topWood) {
     override fun matches(otherSpec: InstrumentSpec): Boolean {
-        if(!super.matches(otherSpec)) return false
-        if(otherSpec is MandolinSpec) {
-            if(style != otherSpec.style) return false
-        }else return false
+        if (!super.matches(otherSpec)) return false
+        if (otherSpec is MandolinSpec) {
+            if (style != otherSpec.style) return false
+        } else return false
         return true
     }
 }
 
-class Style
-
-class Inventory(val inventory: MutableList<Instrument> = mutableListOf()) {
+class Inventory(private val inventory: MutableList<Instrument> = mutableListOf()) {
     fun addInstrument(serialNumber: String, price: Double, spec: InstrumentSpec){
         var instrument:Instrument? = null
         if(spec is GuitarSpec) instrument = Guitar(serialNumber, price, spec)
@@ -81,14 +81,13 @@ class Inventory(val inventory: MutableList<Instrument> = mutableListOf()) {
         instrument?.let { inventory.add(it) }
     }
     fun getGuitar(serialNumber: String): Instrument? = inventory.find { it.serialNumber == serialNumber }
-    fun search(searchSpec: MandolinSpec): List<Instrument> = inventory.filter { it.instrument.matches(searchSpec) }
-    fun search(searchSpec: GuitarSpec): List<Instrument> = inventory.filter { it.instrument.matches(searchSpec) }
+    fun search(searchSpec: InstrumentSpec): List<Instrument> = inventory.filter { it.spec.matches(searchSpec) }
 }
 
 fun printGuitars(guitars: List<Instrument>){
     if(guitars.isNotEmpty()){
         guitars.forEach { guitar ->
-            val spec = guitar.instrument
+            val spec = guitar.spec
             println("""
                 =====================================================================
                 Erin, you might like this ${spec.builder} ${spec.model}
@@ -104,7 +103,7 @@ fun printGuitars(guitars: List<Instrument>){
 fun main() {
     val inventory = Inventory()
     inventory.addInstrument("V956935", 1499.95, GuitarSpec(Builder.FENDER, "Stractocastor1", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, 12))
-    inventory.addInstrument("V956936", 1433.11, MandolinSpec(Builder.FENDER, "Stractocastor2", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, Style()))
+    inventory.addInstrument("V956936", 1433.11, MandolinSpec(Builder.FENDER, "Stractocastor2", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, Style.A))
     inventory.addInstrument("V956937", 1433.11, InstrumentSpec(Builder.FENDER, "Stractocastor3", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE))
     val erinLikes = GuitarSpec(Builder.FENDER, "Stractocastor1", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, 12)
     val guitars = inventory.search(erinLikes)
