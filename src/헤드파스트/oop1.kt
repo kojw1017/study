@@ -1,4 +1,4 @@
-package 헤드파스트
+package 헤드파스트.A
 /*
  283p
  */
@@ -84,7 +84,7 @@ class Inventory(private val inventory: MutableList<Instrument> = mutableListOf()
     fun search(searchSpec: InstrumentSpec): List<Instrument> = inventory.filter { it.spec.matches(searchSpec) }
 }
 
-fun printGuitars(guitars: List<Instrument>){
+fun printGuitar(guitars: List<Instrument>){
     if(guitars.isNotEmpty()){
         guitars.forEach { guitar ->
             val spec = guitar.spec
@@ -107,5 +107,5 @@ fun main() {
     inventory.addInstrument("V956937", 1433.11, InstrumentSpec(Builder.FENDER, "Stractocastor3", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE))
     val erinLikes = GuitarSpec(Builder.FENDER, "Stractocastor1", Type.ELECTRIC,Wood.MAPLE, Wood.MAPLE, 12)
     val guitars = inventory.search(erinLikes)
-    printGuitars(guitars)
+    printGuitar(guitars)
 }
