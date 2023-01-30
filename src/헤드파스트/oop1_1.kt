@@ -58,6 +58,7 @@ fun printGuitar(instruments: List<Instrument>){
                 println("$it : ${spec.getProp(it)}")
             }
             println("You can have this ${spec.getProp("instrumentTYPE")} for ${instrument.price}")
+            println()
         }
     } else println("Sorry we have nothing for you")
 }
@@ -69,15 +70,32 @@ fun main() {
         "builder" to Builder.GIBSON,
         "model" to "Stractocastor",
         "type" to Type.ELECTRIC,
-        "backWood" to Wood.MAPLE,
-        "topWood" to Wood.MAPLE
+        "topWood" to Wood.MAPLE,
+        "backWood" to Wood.MAPLE
     )
     val prop2 = hashMapOf<String, Any>(
+        "instrumentTYPE" to InstrumentType.GUITAR,
         "builder" to Builder.FENDER,
-        "model" to "Stractocastor",
+        "model" to "D-18",
+        "type" to Type.ELECTRIC,
+        "topWood" to Wood.MAPLE,
+        "backWood" to Wood.CEDAR
     )
-    inventory.addInstrument("V956937", 1433.11, InstrumentSpec(prop1))
-    val erinLikes = InstrumentSpec(prop2)
+    val prop3 = hashMapOf<String, Any>(
+        "instrumentTYPE" to InstrumentType.GUITAR,
+        "builder" to Builder.OLSON,
+        "model" to "D-19",
+        "type" to Type.ELECTRIC,
+        "topWood" to Wood.MAPLE,
+        "backWood" to Wood.COCOBOLO
+    )
+    val prop4 = hashMapOf<String, Any>(
+        "topWood" to Wood.MAPLE
+    )
+    inventory.addInstrument("122784", 1433.11, InstrumentSpec(prop1))
+    inventory.addInstrument("V95693", 5495.11, InstrumentSpec(prop2))
+    inventory.addInstrument("V956937", 1499.11, InstrumentSpec(prop3))
+    val erinLikes = InstrumentSpec(prop4)
     val instrumentList = inventory.search(erinLikes)
     printGuitar(instrumentList)
 }
