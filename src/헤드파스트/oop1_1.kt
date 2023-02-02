@@ -1,7 +1,7 @@
 package 헤드파스트.B
 
 /*
- 362p
+ 376p
  */
 enum class Type(val str: String){
     ACOUSTIC("Acoustic"), ELECTRIC("Electric")
