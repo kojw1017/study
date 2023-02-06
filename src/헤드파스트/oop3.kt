@@ -1,7 +1,7 @@
 package 헤드파스트
 
 /*
-442p
+501p
  */
 class Board(var width: Int, var height: Int, var tiles: MutableList<MutableList<Tile>>){
     init {
@@ -38,7 +38,22 @@ class Tile(var units: MutableList<Unit> = mutableListOf()){
     }
     fun getUnits() = units
 }
-class Unit()
+class Unit(
+    var type: String,
+    val id: Int,
+    var name: String,
+    private val waepons: MutableList<Weapon> = mutableListOf(),
+    private var properties: HashMap<String, Any> = hashMapOf()){
+    fun addWeapon(weapon: Weapon){
+        waepons.add(weapon)
+    }
+    fun getWeapons() = waepons
+    fun setProperty(property: String, value: Any){
+        properties[property] = value
+    }
+    fun getProperty(property: String) = properties[property]?: "프로퍼티가 없습니다"
+}
+class Weapon()
 fun main() {
 
 }
