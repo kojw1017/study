@@ -2,7 +2,7 @@ package 헤드파스트
 
 /*
 501p
- */
+*/
 class Board(var width: Int, var height: Int, var tiles: MutableList<MutableList<Tile>>){
     init {
         tiles = mutableListOf()
@@ -53,7 +53,7 @@ class Unit(
     }
     fun getProperty(property: String) = properties[property]?: "프로퍼티가 없습니다"
 }
-class Weapon()
+class Weapon
 fun main() {
 
 }
