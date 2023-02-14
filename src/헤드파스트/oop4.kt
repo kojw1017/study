@@ -7,7 +7,7 @@ import java.lang.RuntimeException
 import java.util.PriorityQueue
 
 /*
-576p
+577p
 */
 class Station(val name: String){
     override fun equals(other: Any?): Boolean {
@@ -65,6 +65,39 @@ class Subway(
         } else {
             netWork[station1] = mutableListOf(station2)
         }
+    }
+    fun getDirections(startStationName: String, endStationName: String): MutableList<Connection>{
+        if(!hasStation(startStationName) || !hasStation(endStationName)){
+            throw RuntimeException("Station entered do not exist on this subway.")
+        }
+        val start = Station(startStationName)
+        val end = Station(endStationName)
+        val route = mutableListOf<Connection>()
+        val reachableStations = mutableListOf<Station>()
+        val previousStations = hashMapOf<Station, Station>()
+
+        val neighbors = netWork[start] as MutableList<Station>
+        neighbors.forEach { station ->
+            if(station == end){
+                getConnection(start, end)?.let { it1 -> route.add(it1) }
+                return route
+            } else {
+                reachableStations.add(station)
+                previousStations[station] = start
+            }
+        }
+
+        val nextStation = mutableListOf<Station>()
+        nextStation.addAll(neighbors)
+        val currentStation = start
+        return route
+    }
+    fun getConnection(station1: Station, station2: Station): Connection?{
+        connections.forEach {  connection ->
+            if(station1 == connection.station1 && station2 == connection.station2)
+                return connection
+        }
+        return null
     }
 }
 
