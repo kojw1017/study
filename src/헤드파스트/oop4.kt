@@ -6,7 +6,7 @@ import java.io.FileReader
 import java.lang.RuntimeException
 
 /*
-560p
+576p
 */
 class Station(val name: String){
     override fun equals(other: Any?): Boolean {
@@ -20,11 +20,13 @@ class Station(val name: String){
 
 class Connection(val station1: Station, val station2: Station, val lineName: String)
 
-class Subway(val stations: MutableList<Station>, val connections: MutableList<Connection>){
+class Subway(
+    val stations: MutableList<Station>,
+    val connections: MutableList<Connection>,
+    val netWork: HashMap<Station, MutableList<Station>>
+){
     fun addStation(stationName: String){
-        if(!hasStation(stationName)){
-            stations.add(Station(stationName))
-        }
+        if(!hasStation(stationName)) stations.add(Station(stationName))
     }
     fun hasStation(stationName: String) = stations.contains(Station(stationName))
     fun addConnection(station1Name: String, station2Name: String, lineName: String){
@@ -35,8 +37,32 @@ class Subway(val stations: MutableList<Station>, val connections: MutableList<Co
             val connection2 = Connection(station1, station2, lineName)
             connections.add(connection1)
             connections.add(connection2)
-        }else {
+            addToNetWork(station1, station2)
+            addToNetWork(station2, station1)
+        } else {
            throw RuntimeException("Invalid connection")
+        }
+    }
+    fun hasConnection(station1Name: String, station2Name: String, lineName: String): Boolean{
+        val station1 = Station(station1Name)
+        val station2 = Station(station2Name)
+        connections.forEach {
+            if(it.lineName.equals(lineName, true)){
+                if(it.station1 == station1 && it.station2 == station2){
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    fun addToNetWork(station1: Station, station2: Station){
+        if(netWork.keys.contains(station1)){
+            val connectingStations = netWork[station1] as MutableList<Station>
+            if(connectingStations.contains(station2)){
+                connectingStations.add(station2)
+            }
+        } else {
+            netWork[station1] = mutableListOf(station2)
         }
     }
 }
