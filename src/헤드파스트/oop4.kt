@@ -4,6 +4,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.lang.RuntimeException
+import java.util.PriorityQueue
 
 /*
 576p
@@ -95,6 +96,40 @@ class SubwayLoader(val subway: Subway){
         }
     }
 }
+class Solution(val operation:List<String> = listOf("I 1", "I 3", "I 5", "I 7", "D -1" )){
+    fun solution(){
+        val answer = mutableListOf<Int>()
+        val minHead = PriorityQueue<Int>()
+        val maxHead = PriorityQueue<Int>(compareByDescending { it })
+        operation.forEach {
+            val tmp = it.split(" ")
+            when(tmp[0]){
+                "I" -> {
+                    minHead.add(tmp[1].toInt())
+                    maxHead.add(tmp[1].toInt())
+                }
+                "D" -> {
+                    if(minHead.isNotEmpty()){
+                        if(tmp[1].toInt() > 0)
+                            minHead.remove(maxHead.poll())
+                        else
+                            maxHead.remove(minHead.poll())
+                    }
+                }
+            }
+        }
+        if(minHead.isEmpty()){
+            answer += 0
+            answer += 0
+        }else{
+            answer += maxHead.peek()
+            answer += minHead.peek()
+        }
+        println("minHead $minHead")
+        println("maxHead $maxHead")
+        println(answer)
+    }
+}
 fun main() {
-
+    Solution().solution()
 }
