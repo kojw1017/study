@@ -1,6 +1,6 @@
 package 오브젝트2
 
-//45p
+//72p
 class Audience(private var amount: Long){
     private var ticket: Ticket? = Ticket.EMPTY
     private var invitation = Invitation.EMPTY
