@@ -113,26 +113,47 @@ class Theater(val fee: Long){
         return ticket?.isValid(this)
     }
 }
+fun a(y: Int) = { c:Int -> c + y }
+fun b(x: Int, y:Int): (Int)->Int {
+    return { it }
+}
+fun c(x: Int, y:Int) = { x:Int -> x + y }
+fun d(x: Int, y:Int) = { x:Int -> x + y }
+fun e(x: Int, y:Int) = { x:Int, y:Int -> x + y }
+fun f(x: Int, y:Int) = { x + y }
 
 fun main(){
-    val theater = Theater(100L)
-    val audience1 = Audience(100L)
-    val audience2 = Audience(50L)
-    val ticketOffice = TicketOffice(0L)
-    val seller = TicketSeller()
+    val aa = a(10)
+    val bb = b(10, 20)
+    val cc = c(10, 20)
+    val dd = d(10, 20)
+    val ee = e(10, 20)
+    val ff = f(10, 20)
+    println(aa(10))
+    println(bb(10))
+    println(cc(10))
+    println(dd(10))
+    println(ee(10, 10))
+    println(ff())
 
-    theater.setTicketOffices(ticketOffice)
-    theater.setTicket(ticketOffice, 10L)
-    theater.setInvitation(audience1)
-
-    seller.setTicketOffice(ticketOffice)
-
-    audience1.buyTicket(seller)
-    audience2.buyTicket(seller)
-
-    val isOk1 = theater.enter(audience1)
-    val isOk2 = theater.enter(audience2)
-    println("-------------------")
-    println(isOk1)
-    println(isOk2)
+//    val theater = Theater(100L)
+//    val audience1 = Audience(100L)
+//    val audience2 = Audience(50L)
+//    val ticketOffice = TicketOffice(0L)
+//    val seller = TicketSeller()
+//
+//    theater.setTicketOffices(ticketOffice)
+//    theater.setTicket(ticketOffice, 10L)
+//    theater.setInvitation(audience1)
+//
+//    seller.setTicketOffice(ticketOffice)
+//
+//    audience1.buyTicket(seller)
+//    audience2.buyTicket(seller)
+//
+//    val isOk1 = theater.enter(audience1)
+//    val isOk2 = theater.enter(audience2)
+//    println("-------------------")
+//    println(isOk1)
+//    println(isOk2)
 }
