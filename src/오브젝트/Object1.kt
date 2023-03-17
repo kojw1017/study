@@ -1,4 +1,4 @@
-package 오브젝트
+package 오브젝트1
 
 //45p
 import java.time.LocalTime
@@ -22,13 +22,16 @@ class TicketOffice(private var amount: Long, private val tickets: MutableList<Ti
     val plusAmount = { amount: Long -> this.amount += amount }
 }
 
-class Theater(val ticketSeller: TicketSeller){
+class Theater(private val ticketSeller: TicketSeller){
     fun enter(audience: Audience){
         if(audience.bag.hasInvitation()){
             val ticket = ticketSeller.getTicketOffice().getTicket()
             audience.bag.setTicket(ticket)
         }else{
-
+            val ticket = ticketSeller.getTicketOffice().getTicket()
+            audience.bag.minusAmount(ticket.fee)
+            ticketSeller.getTicketOffice().plusAmount(ticket.fee)
+            audience.bag.setTicket(ticket)
         }
     }
 }
