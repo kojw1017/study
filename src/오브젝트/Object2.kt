@@ -27,8 +27,8 @@ class Bag(private var amount: Long, private val invitation: Invitation? = null){
     fun hasInvitation() = invitation != null
     fun hasTicket() = ticket != null
     val setTicket = { ticket:Ticket -> this.ticket = ticket }
-    val minusAmount = { amount: Long -> this.amount -= amount }
     val plusAmount = { amount: Long -> this.amount += amount }
+    val minusAmount = { amount: Long -> this.amount -= amount }
 }
 class Invitation(private val theater: Theater?){
     companion object{
@@ -41,7 +41,17 @@ class Ticket(private val theater: Theater?){
         val EMPTY = Ticket(null)
     }
     private var isEntered = false
-    fun isValid(theater: Theater) = !(isEntered || (theater != this.theater) || (this == EMPTY))
+    fun isValid(theater: Theater): Boolean{
+        println(theater.fee)
+        println(isEntered)
+        println(theater != this.theater)
+        println(this == EMPTY)
+        return if(isEntered || theater != this.theater || this == EMPTY) false else{
+            isEntered = true
+            true
+        }
+    }
+
     fun getFee() = theater?.fee
 }
 class TicketSeller{
@@ -64,7 +74,7 @@ class TicketSeller{
 class TicketOffice(private var amount: Long){
     private val tickets = mutableListOf<Ticket>()
 
-    val addTicket = {ticket: Ticket -> tickets.add(ticket)}
+    val addTicket = { ticket: Ticket -> tickets.add(ticket) }
     fun getTicketWithFee(): Ticket {
         return if(tickets.isEmpty()) Ticket.EMPTY
         else{
@@ -89,11 +99,10 @@ class Theater(val fee: Long){
         this.ticketOffices.addAll(ticketOffices)
     }
     fun setTicket(ticketOffice: TicketOffice, num: Long){
-        if(ticketOffices.contains(ticketOffice)){
-            var count = num
-            while (count-- > 0){
-                ticketOffice.addTicket(Ticket(this))
-            }
+        if(!ticketOffices.contains(ticketOffice)) return
+        var count = num
+        while (count-- > 0){
+            ticketOffice.addTicket(Ticket(this))
         }
     }
     fun setInvitation(audience: Audience){
@@ -107,7 +116,7 @@ class Theater(val fee: Long){
 
 fun main(){
     val theater = Theater(100L)
-    val audience1 = Audience(0L)
+    val audience1 = Audience(100L)
     val audience2 = Audience(50L)
     val ticketOffice = TicketOffice(0L)
     val seller = TicketSeller()
@@ -123,7 +132,7 @@ fun main(){
 
     val isOk1 = theater.enter(audience1)
     val isOk2 = theater.enter(audience2)
-
+    println("-------------------")
     println(isOk1)
     println(isOk2)
 }
