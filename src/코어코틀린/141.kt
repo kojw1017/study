@@ -1,17 +1,21 @@
 package 코어코틀린
 
-//193P
+//270P
 
-class LongIterator(private val from: Long, private val to: Long): Iterator<Long>{
-    private var curr = from
-    override fun hasNext(): Boolean = curr <= to
-    override fun next(): Long = curr++
-}
-
-fun main() {
-    val iter = LongIterator(0L, 10L)
-    while (iter.hasNext()){
-        print("${iter.next()},")
+class IterOneToFive: Iterable<Int> {
+    override fun iterator(): Iterator<Int> = iterator {
+        (1..5).forEach { yield(it) }
     }
-    println()
+}
+fun main() {
+    val iterOne2Five = iterator {
+        yield(1)
+        yield(2)
+        yield(3)
+        yield(4)
+        yield(5)
+    }
+    for (i in iterOne2Five) {
+        println(i)
+    }
 }
