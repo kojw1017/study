@@ -1,21 +1,16 @@
 package 코어코틀린
 
-//270P
+//288p
 
-class IterOneToFive: Iterable<Int> {
-    override fun iterator(): Iterator<Int> = iterator {
-        (1..5).forEach { yield(it) }
-    }
-}
+
 fun main() {
-    val iterOne2Five = iterator {
-        yield(1)
-        yield(2)
-        yield(3)
-        yield(4)
-        yield(5)
-    }
-    for (i in iterOne2Five) {
+    val words = "This is an example of a sentence".split(" ")
+    println(words)
+    val charList = words.map{ it.toList() }
+    println(charList.flatMap{ it.mapIndexed { i, c ->
         println(i)
-    }
+        println(c)
+    }})
+    val firstLetterCapitalizedCharList = charList.flatMap{it.mapIndexed{index, c
+        -> if(index==0) c.uppercaseChar() else c}}
 }
