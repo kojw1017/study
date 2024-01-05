@@ -1,4 +1,4 @@
-package 코틀린디자인패턴
+package 코틀린디자인패턴.생성패턴
 
 /**
     팩토리 메서드 - 객체를 생성하는 메서드
@@ -17,12 +17,12 @@ interface ChessPiece{
 data class Pawn(
     override val file:Char,
     override val rank: Char
-):ChessPiece
+): ChessPiece
 data class Queen(
     override val file:Char,
     override val rank: Char
-):ChessPiece
-fun createPiece(notation:String):ChessPiece{
+): ChessPiece
+fun createPiece(notation:String): ChessPiece {
     val (type, file, rank) = notation.toCharArray()
     return when(type){
         'q' -> Queen(file, rank)

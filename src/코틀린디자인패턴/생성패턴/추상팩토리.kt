@@ -1,4 +1,4 @@
-package 코틀린디자인패턴
+package 코틀린디자인패턴.생성패턴
 interface Property{
     val name:String
     val value:Any
@@ -13,23 +13,23 @@ interface ServerConfiguration{
 data class PropertyImpl(
     override val name:String,
     override val value: Any
-):Property
+): Property
 
 data class StringPropertyImpl(
     override val name:String,
     override val value: String
-):Property
+): Property
 data class IntPropertyImpl(
     override val name:String,
     override val value: Int
-):Property
+): Property
 data class ServerConfigurationImpl(
     override val properties: List<Property>
-):ServerConfiguration
+): ServerConfiguration
 
 class Parser{
     companion object{
-        fun property(prop:String):Property{
+        fun property(prop:String): Property {
             val (name, value) = prop.split(":")
             return when(name){
                 "port" -> IntPropertyImpl(name, value.trim().toInt())
@@ -37,7 +37,7 @@ class Parser{
                 else -> throw RuntimeException("알수 없는 속성:$name")
             }
         }
-        fun server(propertyStrings: List<String>):ServerConfiguration{
+        fun server(propertyStrings: List<String>): ServerConfiguration {
             val parseProperties = mutableListOf<Property>()
             for(p in propertyStrings){
                 parseProperties += property(p)

@@ -1,4 +1,4 @@
-package 빌더패턴
+package 코틀린디자인패턴.생성패턴
 
 /**
     빌더 패턴
@@ -48,27 +48,27 @@ class MailBuilder{
     private var message: String = ""
     private var important: Boolean = false
 
-    fun build():Mail{
+    fun build(): Mail {
         if(to.isEmpty()) throw RuntimeException("To 속성 없음")
         return Mail(to, cc, title, message, important)
     }
-    fun to(to: List<String>):MailBuilder{
+    fun to(to: List<String>): MailBuilder {
         this.to = to
         return this
     }
-    fun cc(cc: List<String>):MailBuilder{
+    fun cc(cc: List<String>): MailBuilder {
         this.cc = cc
         return this
     }
-    fun title(title: String):MailBuilder{
+    fun title(title: String): MailBuilder {
         this.title = title
         return this
     }
-    fun message(message: String):MailBuilder{
+    fun message(message: String): MailBuilder {
         this.message = message
         return this
     }
-    fun important(important: Boolean):MailBuilder{
+    fun important(important: Boolean): MailBuilder {
         this.important = important
         return this
     }
