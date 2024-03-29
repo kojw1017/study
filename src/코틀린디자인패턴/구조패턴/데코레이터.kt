@@ -6,62 +6,37 @@ package 코틀린디자인패턴.구조패턴
  *
  */
 
-// 컴포넌트 인터페이스
-interface MessageService {
-    fun sendMessage(message: String)
+interface Coffee{
+    fun cost():Int
+    fun name():String
 }
 
-// 구체적인 컴포넌트
-class BasicMessageService : MessageService {
-    override fun sendMessage(message: String) {
-        println("Sending message: $message")
-    }
+class NormalCoffee:Coffee{
+    override fun cost() = 10
+    override fun name() = "coffee"
 }
 
-// 데코레이터 추상 클래스
-abstract class MessageDecorator(protected val wrappedService: MessageService) : MessageService
-
-// 암호화 데코레이터
-class EncryptedMessageDecorator(service: MessageService) : MessageDecorator(service) {
-    override fun sendMessage(message: String) {
-        val encryptedMessage = encrypt(message)
-        println("Encrypting message...")
-        wrappedService.sendMessage(encryptedMessage)
-    }
-
-    private fun encrypt(message: String): String {
-        // 암호화 로직
-        return message.reversed()
-    }
+abstract class CoffeeDecorator(private val coffee: Coffee):Coffee{
+    override fun cost() = coffee.cost()
+    override fun name() = coffee.name()
+}
+class MilkCoffee(coffee: Coffee):CoffeeDecorator(coffee){
+    override fun name() = "Milk ${super.name()}"
 }
 
-// 압축 데코레이터
-class CompressedMessageDecorator(service: MessageService) : MessageDecorator(service) {
-    override fun sendMessage(message: String) {
-        val compressedMessage = compress(message)
-        println("Compressing message...")
-        wrappedService.sendMessage(compressedMessage)
-    }
-
-    private fun compress(message: String): String {
-        // 압축 로직
-        return message.replace(" ", "")
-    }
+class MilkCoffee1(coffee: Coffee):CoffeeDecorator(coffee){
+    override fun name() = "Milk11 ${super.name()}"
 }
 
-// 로깅 데코레이터
-class LoggingMessageDecorator(service: MessageService) : MessageDecorator(service) {
-    override fun sendMessage(message: String) {
-        println("Logging: Sending message '$message'")
-        wrappedService.sendMessage(message)
-    }
-}
 
 fun main() {
-    var service: MessageService = BasicMessageService()
-    service = LoggingMessageDecorator(service)
-    service = EncryptedMessageDecorator(service)
-    service = CompressedMessageDecorator(service)
-
-    service.sendMessage("Hello, World! This is a test message.")
+    val normalCoffee = NormalCoffee()
+    println("${normalCoffee.cost()}")
+    println("${normalCoffee.name()}")
+    val milkCoffee = MilkCoffee(normalCoffee)
+    println("${milkCoffee.cost()}")
+    println("${milkCoffee.name()}")
+    val milkCoffee1 = MilkCoffee1(normalCoffee)
+    println("${milkCoffee1.cost()}")
+    println("${milkCoffee1.name()}")
 }
