@@ -65,3 +65,21 @@ J
 src/코테/추억점수.kt,3\c\3c0a806e2ad56f09911c845c211a8e15213d19e7
 J
 src/코어코틀린/141.kt,e\f\ef60588ab7d2a1a28aa2872b2b46fe3a623f9ad2
+i
+9src/코틀린디자인패턴/구조패턴/컴포지트.kt,b\5\b5854c4237ed45facfca22a866d89c68103da51f
+N
+src/스트링기파이/take.kt,0\4\049816e1801039b46b865b2dc711f7703649e6fd
+P
+ src/코드스피츠/language1.kt,c\0\c0b0c25df9be2273e6a0fd887a5b58b4e18668f2
+N
+src/코드스피츠/kotlin1.kt,b\a\bafbf4ff81bc0a31b45a1a5f68a745b65449bfbc
+P
+ src/코드스피츠/language2.kt,8\d\8d62fe1ff47fb6c9c588730aa89705cbc04c05f3
+K
+src/오브젝트/Object2.kt,d\5\d508d5ff84fa00f8403a9bac805f88170085d61a
+K
+src/오브젝트/Object1.kt,b\7\b7c2cb835532ac7bb6c284752b3299624277feb4
+J
+src/오브젝트/위임.kt,7\9\79e4440f17e69a44ad0fb6022f4ee00e1480efa4
+S
+#src/오브젝트/이터레이터.kt,e\b\ebb170906b4b8f7e34cc525b0e073825556e6095
