@@ -4,6 +4,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -27,27 +28,34 @@ suspend fun suspendAndSetContinuation(){
     }
 }
 
-suspend fun main() = coroutineScope {
-    val job1 = launch {
-        // 백그라운드 작업 1
-    }
-    val job2 = launch {
-        // 백그라운드 작업 2
-    }
-    // job1과 job2가 모두 종료될 때까지 기다림
-    job1.join()
-    job2.join()
-    // UI 업데이트
+suspend fun a() = coroutineScope {
     println("before")
-    //    suspendCoroutine<Unit> {
-    //        thread {
-    //            println("suspended")
-    //            Thread.sleep(1000)
-    //            it.resume(Unit)
-    //            println("resume")
-    //        }
-    //    }
+    launch {
+        delay(3000)
+        countinuation?.resume(Unit)
+    }
+    suspendAndSetContinuation()
+    println("after")
+}
+suspend fun b() {
+    suspendCoroutine<Unit> {
+        thread {
+            println("suspended")
+            Thread.sleep(1000)
+            it.resume(Unit)
+            println("resume")
+        }
+    }
+}
+suspend fun c()  {
+    println("before")
     suspendAndSetContinuation()
     countinuation?.resume(Unit)
     println("after")
+}
+
+
+suspend fun main(){
+   a()
+//   b()
 }
