@@ -37,3 +37,7 @@ Q.idea/sonarlint/securityhotspotstore/1/e/1e1326829980bb69a2d546f6ebb59eafbd6eca
 Q.idea/sonarlint/securityhotspotstore/1/c/1c74442dca650b12a38c0b6ecbeb3311143462d0,9\8\98f332320f419801b6abcfe33d8aa2eb85e29899
 w
 G.idea/sonarlint/issuestore/9/f/9fc01a14f8ab5684f6dda280c0f8dad49b00e275,9\e\9e51badd7d2504282f29e3813503920fb6c26fc8
+v
+Fsrc/main/kotlin/dev/코틀린디자인패턴/구조패턴/브릿지.kt,9\7\972995d55f3e55eb0090054fde36f38599779634
+w
+Gsrc/main/kotlin/dev/코틀린디자인패턴/구조패턴/브릿지2.kt,c\7\c7588a86a4be0ce39c0a628a5c3abec699a8d4d9
