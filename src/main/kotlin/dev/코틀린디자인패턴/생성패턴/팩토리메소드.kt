@@ -1,5 +1,8 @@
 package 코틀린디자인패턴.생성패턴33
 
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+
 /**
     팩토리 메서드 - 객체를 생성하는 메서드
 
@@ -30,6 +33,7 @@ fun createPiece(notation:String): ChessPiece {
         else -> throw RuntimeException("알수 없는 종류:$type")
     }
 }
+
 fun main(){
     val notation = listOf("pa8", "qc3")
     val pieces = mutableListOf<ChessPiece>()
