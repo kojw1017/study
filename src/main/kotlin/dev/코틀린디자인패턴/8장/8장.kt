@@ -1,22 +1,26 @@
 package org.example.dev.코틀린디자인패턴.`8장`
 
-import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.runBlocking
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
-//val input = listOf(setOf(1, 2, 3), setOf(3, 1, 2), setOf(2, 3, 1))
-//fun sum(numbers:Set<Int>):Double = numbers.sumOf { it.toDouble() }
-//fun summarizer(): (Set<Int>) -> Double{
-//    val resultCache = mutableMapOf(Set<Int>, Double)()
-//    return { numbers: Set<Int> ->
-//        resultCache.computeIf
-//    }
-//}
-//fun main() {
-//    runBlocking {
-//        val a  = actor<String> {
-//            for (c in channel){
-//
-//            }
-//        }
-//    }
-//}
+
+fun main() {
+    val pool = Executors.newFixedThreadPool(100)
+
+    val counter = AtomicInteger(0)
+    val start = System.currentTimeMillis()
+    for (i in 1..10_000){
+        pool.submit{
+            counter.incrementAndGet()
+
+            Thread.sleep(100)
+
+            counter.incrementAndGet()
+        }
+    }
+
+    pool.awaitTermination(20, TimeUnit.SECONDS)
+    pool.shutdown()
+    println("${System.currentTimeMillis() - start}밀리초 동안 ${counter.get() / 2}의 작업을 완료함")
+}
