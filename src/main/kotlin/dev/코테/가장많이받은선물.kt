@@ -1,100 +1,86 @@
 package 코테22
 
 class Solution {
+    //가장많이받은선물
+    private fun validateFriendsAndGifts(friends: Array<String>, gifts: Array<String>) {
+        validateFriends(friends)
+        validateGifts(gifts, friends)
+    }
+    private fun validateFriends(friends: Array<String>) {
+        require(friends.size in 2..50) { "친구 수는 2 이상 50 이하여야 합니다." }
+        require(friends.all { it.matches(Regex("^[a-z]*$")) }) { "친구 이름은 알파벳 소문자로만 이루어져야 합니다." }
+        require(friends.size == friends.distinct().size) { "중복된 이름이 없어야 합니다." }
+    }
+    private fun validateGifts(gifts: Array<String>, friends: Array<String>) {
+        require(gifts.size in 1..10000) { "선물 수는 1 이상 10000 이하여야 합니다." }
+
+        gifts.forEach { gift ->
+            val (giver, receiver) = gift.split(" ").also {
+                require(it.size == 2) { "선물 기록은 공백으로 구분된 두 이름으로 이루어져야 합니다." }
+            }
+            require(giver in friends && receiver in friends) { "선물을 주고받는 사람은 친구 목록에 있어야 합니다." }
+            require(giver != receiver) { "선물을 주는 사람과 받는 사람이 같을 수 없습니다." }
+        }
+    }
     fun solution(friends: Array<String>, gifts: Array<String>): Int {
-        var answer: Int = 0
-        val a = friends.associateWith { name ->
-            gifts.count{ name == it.split(" ")[0] } - gifts.count{ name == it.split(" ")[1] }
+        //밸리데이션 체크
+        validateFriendsAndGifts(friends, gifts)
+        // 선물 기록을 저장할 맵
+        val giftMap = mutableMapOf<String, MutableMap<String, Int>>()
+        // 선물 지수를 저장할 맵
+        val giftIndex = mutableMapOf<String, Int>()
+        // 다음 달 선물 계산
+        val nextMonthGifts = mutableMapOf<String, Int>()
+
+        // 초기화
+        friends.forEach { friend ->
+            giftMap[friend] = mutableMapOf()
+            friends.forEach { other ->
+                if (friend != other) giftMap[friend]!![other] = 0
+            }
+            giftIndex[friend] = 0
+            nextMonthGifts[friend] = 0
         }
-        a.forEach {
-            println("k->${it.key} v->${it.value}")
+
+        // 선물 기록 처리
+        gifts.forEach { gift ->
+            val (giver, receiver) = gift.split(" ")
+            giftMap[giver]!![receiver] = giftMap[giver]!![receiver]!! + 1
+            giftIndex[giver] = giftIndex[giver]!! + 1
+            giftIndex[receiver] = giftIndex[receiver]!! - 1
         }
-        return answer
+
+        // 다음 달 선물 계산
+        for(i in friends.indices){
+            for(j in i+1 until friends.size){
+                val friends1 = friends[i]
+                val friends2 = friends[j]
+                val gift1to2 = giftMap[friends1]!![friends2]!!
+                val gift2to1 = giftMap[friends2]!![friends1]!!
+                when{
+                    //두사람 사이 이번달 선물을 더많이 준사람은 다음달에 준사람에게 선물을 하나 받음
+                    //두사람 사이 선물을 주고받은 기록이 없거나 주고 받은 수가 같을 경우 선물지수 큰사람이 작은사람에게 선물
+                    //선물 지수도 같으면 선물 주고받지 않음
+                    gift1to2 > gift2to1 -> nextMonthGifts[friends1] = nextMonthGifts[friends1]!! + 1
+                    gift1to2 < gift2to1 -> nextMonthGifts[friends2] = nextMonthGifts[friends2]!! + 1
+                    else -> {
+                        val index1 = giftIndex[friends1]!!
+                        val index2 = giftIndex[friends2]!!
+                        when{
+                            index1 > index2 -> nextMonthGifts[friends1] = nextMonthGifts[friends1]!! + 1
+                            index1 < index2 -> nextMonthGifts[friends2] = nextMonthGifts[friends2]!! + 1
+                        }
+                    }
+                }
+            }
+        }
+        return nextMonthGifts.maxOfOrNull { it.value } ?: 0
     }
 }
 
-
-//fun main(){
-//    Solution().solution(arrayOf("muzi", "ryan", "frodo", "neo"), arrayOf("muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"))
-//}
-
-data class User(val id: Int, val name: String, val age: Int, val city: String, val email: String)
-
 fun main() {
-    val users = listOf(
-        User(1, "Alice", 30, "London", "alice@example1.com"),
-        User(2, "Bob", 28, "New York", "bob@example1.com"),
-        User(3, "Carol", 32, "San Francisco", "carol@example1.com"),
-        User(4, "Dave", 39, "London", "dave@example2.com"),
-        User(5, "Eve", 30, "Paris", "eve@example2.com"),
-        User(6, "Frank", 25, "Berlin", "frank@example2.com")
-    )
-
-    // 나이가 30 이상인 사람들의 이름 목록 만들기
-    val namesOfOlderThan30 = users.filter { it.age >= 30 }.map { it.name }
-    println("Names of Older Than 30: $namesOfOlderThan30")
-    // 결과: [Alice, Carol, Dave, Eve]
-
-    // reduce: 모든 사람들의 나이 합계
-    val totalAge = users.map { it.age }.reduce { sum, age -> sum + age }
-    println("Total Age: $totalAge")
-    // 결과: 184
-
-    // flatMap: 각 이름의 문자를 리스트로 변환 후 평탄화
-    val characters = users.map { it.name }.flatMap { it.toList() }
-    println("Characters: $characters")
-    // 결과: [A, l, i, c, e, B, o, b, C, a, r, o, l, D, a, v, e, E, v, e, F, r, a, n, k]
-
-    // partition: 나이가 30 이상인 사람과 그렇지 않은 사람으로 나누기
-    val (older, younger) = users.partition { it.age >= 30 }
-    println("Older and Younger: $older, $younger")
-    // 결과: ([User(id=1, name=Alice, age=30, city=London), User(id=3, name=Carol, age=32, city=San Francisco), User(id=4, name=Dave, age=39, city=London), User(id=5, name=Eve, age=30, city=Paris)], [User(id=2, name=Bob, age=28, city=New York), User(id=6, name=Frank, age=25, city=Berlin)])
-
-    // zip: 이름과 도시를 쌍으로 묶기
-    val nameAndCity = users.map { it.name }.zip(users.map { it.city })
-    println("Name and City: $nameAndCity")
-    // 결과: [(Alice, London), (Bob, New York), (Carol, San Francisco), (Dave, London), (Eve, Paris), (Frank, Berlin)]
-
-    // associate: 이름을 키로, 나이를 값으로 하는 맵 만들기
-    val nameToAge = users.associate { it.name to it.age }
-    println("Name to Age: $nameToAge")
-    // 결과: {Alice=30, Bob=28, Carol=32, Dave=39, Eve=30, Frank=25}
-
-    // 30세 이상의 사용자를 찾아 그들의 이름을 대문자로 변환하고 도시별로 그룹화하기
-    val groupedByCity = users.filter { it.age >= 30 }
-        .map { it.copy(name = it.name.uppercase()) }
-        .groupBy { it.city }
-    println("Grouped by City: $groupedByCity")
-    // 결과: {London=[User(id=1, name=ALICE, ...), User(id=4, name=DAVE, ...)], San Francisco=[User(id=3, name=CAROL, ...)], Paris=[User(id=5, name=EVE, ...)]}
-
-    // 모든 사용자의 이메일 도메인을 추출하고 중복을 제거한 후 정렬하기
-    val emailDomains = users.map { it.email.substringAfter('@') }
-        .distinct()
-        .sorted()
-    println("Email Domains: $emailDomains")
-    // 결과: [example1.com, example2.com]
-
-    // 사용자 이름의 첫 글자별로 그룹화하고, 각 그룹의 평균 나이 계산하기
-    val averageAgeByNameInitial = users.groupBy { it.name.first() }
-        .mapValues { (_, users) -> users.map { it.age }.average() }
-    println("Average Age by Name Initial: $averageAgeByNameInitial")
-    // 결과: {A=30.0, B=28.0, C=32.0, D=39.0, E=30.0, F=25.0}
-
-    // 사용자를 나이에 따라 정렬하고, 각 사용자의 이름과 나이를 쌍으로 만든 리스트 생성하기
-    val namesAndAges = users.sortedBy { it.age }
-        .map { it.name to it.age }
-    println("Names and Ages: $namesAndAges")
-    // 결과: [(Frank, 25), (Bob, 28), (Alice, 30), (Eve, 30), (Carol, 32), (Dave, 39)]
-
-    // 도시별 평균 나이 계산하기
-    val averageAgeByCity = users.groupBy { it.city }
-        .mapValues { (_, users) -> users.map { it.age }.average() }
-    println("Average Age by City: $averageAgeByCity")
-    // 결과: {London=34.5, New York=28.0, San Francisco=32.0, Paris=30.0, Berlin=25.0}
-
-    // 각 도시에서 가장 젊은 사용자 찾기
-    val youngestByCity = users.groupBy { it.city }
-        .mapValues { (_, users) -> users.minByOrNull { it.age } }
-    println("Youngest by City: $youngestByCity")
-    // 결과: {London=User(id=1, name=Alice, ...), New York=User(id=2, name=Bob, ...), San Francisco=User(id=3, name=Carol, ...), Paris=User(id=5, name=Eve, ...), Berlin=User(id=6, name=Frank, ...)}
+    val friends = arrayOf("muzi", "ryan", "frodo", "neo")
+    val gifts = arrayOf("muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi")
+    val s = Solution()
+    println(s.solution(friends, gifts))
 }

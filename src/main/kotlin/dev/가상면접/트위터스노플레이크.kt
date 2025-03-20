@@ -1,4 +1,4 @@
-package org.example.dev.가상면접으로배우는대규모설계
+package org.example.dev.가상면접
 
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicLong
