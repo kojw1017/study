@@ -1,0 +1,8 @@
+
+bkotlin:S125¦"Remove this commented out code.(—çÄ’ûÿÿÿÿJ$c2b8f2cc-67ee-4983-aaf3-c092d8ca5f92
+]kotlin:S125°"Remove this commented out code.(¬¬ˆJ$923020be-4f26-4d9d-8abf-6800752f9cb9
+qkotlin:S1481\"3Remove this unused "currentStation" local variable.(¯öÇÿJ$e468dc54-ea38-4664-8111-49ce787ec9e4
+ckotlin:S6529m"DReplace null check and collection size check with "!isNullOrEmpty()"(ø¿ê8…ÖœÓ’2
+ckotlin:S6529}"DReplace null check and collection size check with "!isNullOrEmpty()"(¿æ…µ8‡ÖœÓ’2
+qkotlin:S1066".Merge this "if" statement with the nested one.(¼õ“ôşÿÿÿÿJ$fec4cd8e-3663-4099-9bdc-9b794e83bd9e
+lkotlin:S10663".Merge this "if" statement with the nested one.(‡È°ıJ$dd4662d4-732c-420b-bb63-758243c171dc

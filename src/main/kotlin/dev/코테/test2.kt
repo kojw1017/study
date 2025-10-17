@@ -1,6 +1,6 @@
-package 코테
+package 코테12
 
-class Solution {
+private class Solution {
     fun solution(arr: IntArray): IntArray {
         if(arr.size == 1) return intArrayOf(-1)
         var min = arr[0]
