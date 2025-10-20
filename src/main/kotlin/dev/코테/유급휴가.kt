@@ -1,4 +1,5 @@
-class Solution {
+package 코테
+private class Solution {
 
     // ---- Public API ----
     fun solution(schedules: IntArray, timelogs: Array<IntArray>, startday: Int): Int {

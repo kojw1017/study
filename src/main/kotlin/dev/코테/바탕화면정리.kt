@@ -1,4 +1,4 @@
-package 코테1
+package 코테122
 
 class Solution {
     fun solution(wallpaper: Array<String>): IntArray {
