@@ -26,33 +26,33 @@ package org.example.dev.코테
 
 fun main() {
     val s = "abcabcabcabcdededededede"
-    println(solution(s)) // 7
+    println(solution(s)) // 14
 }
 
-fun solution(s: String): Int {
-    if (s.length == 1) return 1
-
+private fun solution(s: String): Int {
     var minLength = s.length
 
     for (K in 1..s.length / 2) {
-        var compressed = ""
-        var prev = s.substring(0, K)
         var count = 1
+        var prev = s.substring(0, K)
+        var sb = StringBuilder()
+
         for (i in K until s.length step K) {
-            val currentStr = s.substring(i, minOf(i + K, s.length))
-            if (prev == currentStr) {
+            val current = s.substring(i, (i + K).coerceAtMost(s.length))
+            if (prev == current) {
                 count++
             } else {
-                compressed += if (count > 1) "$count$prev" else prev
-                prev = currentStr
+                if (count > 1) sb.append(count)
+                sb.append(prev)
+                prev = current
                 count = 1
             }
         }
-        println("compressed so far: $compressed, prev: $prev, count: $count")
-        compressed += if (count > 1) "$count$prev" else prev
-        println("final compressed: $compressed")
-        minLength = minOf(minLength, compressed.length)
-    }
 
+        if (count > 1) sb.append(count)
+        sb.append(prev)
+        minLength = minOf(minLength, sb.length)
+    }
     return minLength
+
 }
