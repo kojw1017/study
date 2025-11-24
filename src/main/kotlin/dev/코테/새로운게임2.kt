@@ -2,8 +2,6 @@ package org.example.dev.코테
 
 // 문제 : https://www.acmicpc.net/problem/17837
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.util.StringTokenizer
 
 private const val WHITE = 0
@@ -16,18 +14,18 @@ private enum class Dir(val dx: Int, val dy: Int) {
     DOWN(1, 0);
 
     companion object {
-        operator fun invoke(d: Int): Dir {
-            return when (d) {
+        operator fun invoke(value: Int): Dir {
+            return when (value) {
                 1 -> RIGHT
                 2 -> LEFT
                 3 -> UP
                 4 -> DOWN
-                else -> throw IllegalArgumentException("Unknown dir: $d")
+                else -> throw IllegalArgumentException("Invalid direction value: $value")
             }
         }
 
-        fun reverse(d: Dir): Dir {
-            return when (d) {
+        fun reserve(dir: Dir): Dir {
+            return when (dir) {
                 RIGHT -> LEFT
                 LEFT -> RIGHT
                 UP -> DOWN
@@ -37,20 +35,22 @@ private enum class Dir(val dx: Int, val dy: Int) {
     }
 }
 
-private data class Horse(var x: Int, var y: Int, var d: Dir)
+private fun isBounds(x: Int, y: Int, n: Int): Boolean {
+    return x in 0 until n && y in 0 until n
+}
 
-private fun isBounds(x: Int, y: Int, n: Int) = x in 0 until n && y in 0 until n
+private class Horse(var x: Int, var y: Int, var dir: Dir)
 
-private fun solution(colors: Array<IntArray>, board: Array<Array<MutableList<Int>>>, horses: Array<Horse>): Int {
+private fun solution(colors: Array<Array<Int>>, board: Array<Array<MutableList<Int>>>, horses: Array<Horse>): Int {
     val n = colors.size
 
     for (turn in 1..1000) {
+
         for (i in horses.indices) {
             val horse = horses[i]
-
             val x = horse.x
             val y = horse.y
-            var d = horse.d
+            var d = horse.dir
 
             var nx = x + d.dx
             var ny = y + d.dy
@@ -58,32 +58,31 @@ private fun solution(colors: Array<IntArray>, board: Array<Array<MutableList<Int
             var nextColor = if (isBounds(nx, ny, n)) colors[nx][ny] else BLUE
 
             if (nextColor == BLUE) {
-                d = Dir.reverse(d)
-                horse.d = d
-
+                d = Dir.reserve(d)
                 nx = x + d.dx
                 ny = y + d.dy
+                horse.dir = d
 
                 nextColor = if (isBounds(nx, ny, n)) colors[nx][ny] else BLUE
 
                 if (nextColor == BLUE) continue
             }
 
-            val currBoard = board[x][y]
-            val from = currBoard.indexOf(i)
-
-            val horsesSubList = currBoard.subList(from, currBoard.size)
-            val moveHorses = (if (nextColor == WHITE) horsesSubList else horsesSubList.asReversed()).toList()
-            horsesSubList.clear()
+            val curBoard = board[x][y]
+            val idx = curBoard.indexOf(i)
+            val movingHorses = curBoard.subList(idx, curBoard.size)
+            val toMove = if (nextColor == WHITE) {
+                movingHorses.toList()
+            } else {
+                movingHorses.reversed()
+            }
+            movingHorses.clear()
 
             val nextBoard = board[nx][ny]
-
-            for (horseIdx in moveHorses) {
-                horses[horseIdx].apply {
-                    this.x = nx
-                    this.y = ny
-                }
-                nextBoard.add(horseIdx)
+            toMove.forEach {
+                horses[it].x = nx
+                horses[it].y = ny
+                nextBoard.add(it)
             }
 
             if (nextBoard.size >= 4) {
@@ -91,30 +90,43 @@ private fun solution(colors: Array<IntArray>, board: Array<Array<MutableList<Int
             }
         }
     }
+
     return -1
 }
 
 fun main() {
-    val br = BufferedReader(InputStreamReader(System.`in`))
+    val br = System.`in`.bufferedReader()
     var st = StringTokenizer(br.readLine())
 
     val n = st.nextToken().toInt()
     val k = st.nextToken().toInt()
 
+    val board = Array(n) { Array(k) { mutableListOf<Int>() } }
+
     val colors = Array(n) {
         st = StringTokenizer(br.readLine())
-        IntArray(n) { st.nextToken().toInt() }
+        Array(n) {
+            st.nextToken().toInt()
+        }
     }
 
-    val board = Array(n) { Array(n) { mutableListOf<Int>() } }
-
-    val horses = Array(k) { idx ->
+    val horses = Array(k) {
         st = StringTokenizer(br.readLine())
         val x = st.nextToken().toInt() - 1
         val y = st.nextToken().toInt() - 1
-        val d = st.nextToken().toInt()
-        board[x][y].add(idx)
-        Horse(x, y, Dir(d))
+        val dir = Dir(st.nextToken().toInt())
+        board[x][y].add(it)
+        Horse(x, y, dir)
+    }
+
+    //입력 테스트
+    println("Board Colors:")
+    for (row in colors) {
+        println(row.joinToString(" "))
+    }
+    println("Horses:")
+    for ((index, horse) in horses.withIndex()) {
+        println("Horse $index: Position (${horse.x}, ${horse.y}), Direction ${horse.dir}")
     }
 
     println(solution(colors, board, horses))
