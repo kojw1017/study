@@ -10,7 +10,6 @@ package org.example.dev.코테
  * @param room   0:미청소, 1:벽, 2:청소됨
  * @return 청소한 칸 수
  *
- * ⚠️ room 배열을 **직접 수정**합니다(청소 칸을 2로 표시). 원본 보존이 필요하면 호출 전 깊은 복사를 하세요.
  */
 private const val EMPTY = 0
 private const val WALL = 1
