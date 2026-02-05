@@ -1,0 +1,77 @@
+graph TD
+    subgraph Client Services [클라이언트 서비스]
+        A[주문/결제 서비스] --> B{알림 생성};
+    end
+
+    B --> API_GW(API Gateway);
+
+subgraph Notification System [알림 시스템]
+API_GW --> NOTI_API(Notification API);
+
+NOTI_API --> MQ_INIT(Initial Message Queue);
+
+MQ_INIT --> QR(Queue Router);
+
+subgraph Worker Pool [알림 처리 워커 풀]
+H[iOS Push Worker] -- APNS Token --> APNS(APNS - Apple);
+I[Android Push Worker] -- FCM Token --> FCM(FCM - Google);
+J[SMS Worker] -- Phone Number --> TWILIO(SMS Gateway - Twilio);
+N[Email Worker] -- Email Address --> SENDGRID(Email Gateway - SendGrid);
+end
+
+QR --> MQ_IOS(iOS Push Queue);
+QR --> MQ_ANDROID(Android Push Queue);
+QR --> MQ_SMS(SMS Queue);
+QR --> MQ_EMAIL(Email Queue);
+
+MQ_IOS --> H;
+MQ_ANDROID --> I;
+MQ_SMS --> J;
+MQ_EMAIL --> N;
+
+H -- 發送失敗 --> MQ_RETRY(Retry Queue);
+I -- 發送失敗 --> MQ_RETRY;
+J -- 發送失敗 --> MQ_RETRY;
+N -- 發送失敗 --> MQ_RETRY;
+
+MQ_RETRY --> MQ_DLQ(Dead Letter Queue - DLQ);
+
+subgraph Data & Cache [데이터 & 캐시 레이어]
+DB(Notification DB - MySQL) <--> CACHE(Notification Cache - Redis);
+DB -- 사용자 정보 --> USER_DB(User Profile DB);
+end
+
+H --> CACHE;
+I --> CACHE;
+J --> CACHE;
+N --> CACHE;
+
+CACHE --> USER_DB;
+
+MONITOR(Monitoring & Alerting);
+MQ_INIT -- Status --> MONITOR;
+MQ_IOS -- Status --> MONITOR;
+H -- Status --> MONITOR;
+DB -- Status --> MONITOR;
+APNS -- Status --> MONITOR;
+TWILIO -- Status --> MONITOR;
+end
+
+style API_GW fill:#f9d,stroke:#333,stroke-width:2px;
+style NOTI_API fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_INIT fill:#f9d,stroke:#333,stroke-width:2px;
+style QR fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_IOS fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_ANDROID fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_SMS fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_EMAIL fill:#f9d,stroke:#333,stroke-width:2px;
+style H fill:#f9d,stroke:#333,stroke-width:2px;
+style I fill:#f9d,stroke:#333,stroke-width:2px;
+style J fill:#f9d,stroke:#333,stroke-width:2px;
+style N fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_RETRY fill:#f9d,stroke:#333,stroke-width:2px;
+style MQ_DLQ fill:#f9d,stroke:#333,stroke-width:2px;
+style CACHE fill:#f9d,stroke:#333,stroke-width:2px;
+style DB fill:#f9d,stroke:#333,stroke-width:2px;
+style USER_DB fill:#f9d,stroke:#333,stroke-width:2px;
+style MONITOR fill:#f9d,stroke:#333,stroke-width:2px;
